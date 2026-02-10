@@ -1,0 +1,66 @@
+{% extends "base.html" %} {% import "partials/components.html" as icon %} {%
+block content %}
+<style>
+  #sync-btn .icon-spinner {
+    display: none;
+  }
+  #sync-btn.htmx-request .icon-normal {
+    display: none;
+  }
+  #sync-btn.htmx-request .icon-spinner {
+    display: block;
+  }
+</style>
+
+<header
+  class="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-5 flex justify-between items-center w-full"
+>
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-white">Transactions</h1>
+    <div id="status-indicator" class="flex items-center gap-2 mt-1.5">
+      {% if last_synced != "Never" %}
+      <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+      <span class="text-xs text-green-500 font-medium tracking-wide"
+        >Last synced {{ last_synced }}</span
+      >
+      {% else %}
+      <div class="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+      <span class="text-xs text-gray-400 font-medium tracking-wide">Ready</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button
+      id="sync-btn"
+      hx-get="/transactions-sync"
+      hx-target="#transaction-list"
+      hx-indicator="this"
+      hx-disabled-elt="this"
+      hx-on::before-request="document.querySelector('#status-indicator span').innerText = 'Syncing...'; document.querySelector('#status-indicator div').classList.remove('bg-gray-500', 'bg-green-500', 'bg-red-500'); document.querySelector('#status-indicator div').classList.add('bg-blue-500', 'animate-pulse');"
+      class="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10 relative"
+    >
+      {{ icon.refresh("icon-normal w-[22px] h-[22px]") }} {{
+      icon.spinner("icon-spinner w-[22px] h-[22px]") }}
+    </button>
+
+    <a
+      href="/settings"
+      class="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+    >
+      {{ icon.cog("w-[22px] h-[22px]") }}
+    </a>
+  </div>
+</header>
+
+<main class="flex-1 w-full px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl pb-20">
+  <div
+    id="transaction-list"
+    hx-get="/transactions-sync"
+    hx-trigger="load"
+    hx-indicator="#sync-btn"
+  >
+    {% include "partials/transaction_rows.html" %}
+  </div>
+</main>
+{% endblock %}

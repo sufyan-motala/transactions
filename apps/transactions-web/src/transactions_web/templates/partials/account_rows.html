@@ -1,0 +1,43 @@
+{% import "partials/components.html" as icon %} {% for acc in accounts %} {% if
+acc.error %}
+<div
+  class="bg-red-900/10 rounded-2xl p-5 border border-red-500/20 flex items-center gap-4"
+>
+  <div
+    class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center"
+  >
+    {{ icon.alert("text-red-500 w-5 h-5") }}
+  </div>
+  <div class="text-sm text-red-400">{{ acc.msg }}</div>
+</div>
+{% else %}
+<div
+  class="bg-gray-900/50 rounded-2xl p-5 border border-white/5 flex justify-between items-center group hover:border-white/10 transition-colors"
+>
+  <div class="flex items-center gap-4">
+    <div
+      class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5"
+    >
+      {{ icon.bank("text-gray-400 w-5 h-5") }}
+    </div>
+    <div>
+      <div class="text-base font-bold text-white tracking-tight">
+        {{ acc.name }}
+      </div>
+      <div class="text-xs text-gray-500">{{ acc.org }}</div>
+    </div>
+  </div>
+  <div class="text-right">
+    <div class="text-base font-mono font-medium text-white">
+      {{ acc.balance | currency }}
+    </div>
+    <div class="text-[10px] text-gray-600 uppercase tracking-wider">
+      {{ acc.currency }}
+    </div>
+  </div>
+</div>
+{% endif %} {% else %}
+<div class="text-sm text-gray-500 italic text-center py-4">
+  No accounts found. Add a connection above.
+</div>
+{% endfor %}

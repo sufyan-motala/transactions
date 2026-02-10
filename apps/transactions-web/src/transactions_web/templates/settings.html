@@ -1,0 +1,90 @@
+{% extends "base.html" %} {% import "partials/components.html" as ui %} {% block
+content %}
+<header
+  class="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-5 flex items-center gap-4"
+>
+  <a href="/" class="text-gray-400 hover:text-white transition-colors">
+    {{ ui.arrow_left("w-6 h-6") }}
+  </a>
+  <h1 class="text-xl font-bold text-white tracking-tight">Settings</h1>
+</header>
+
+<div class="p-6 max-w-3xl mx-auto w-full space-y-10">
+  {# Flash Error Display #} {% if flash_error %} {{ ui.error_badge(flash_error)
+  }} {% endif %}
+
+  <div
+    class="bg-gray-900/50 rounded-2xl p-6 border border-white/5 flex justify-between items-center"
+  >
+    <div>
+      <div
+        class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-1"
+      >
+        Signed in as
+      </div>
+      <div class="text-white font-medium text-lg">{{ user }}</div>
+    </div>
+    <a
+      href="/logout"
+      class="bg-white/5 hover:bg-white/10 text-gray-300 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors border border-white/10"
+      >Sign Out</a
+    >
+  </div>
+
+  <div>
+    <h2
+      class="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4 px-1"
+    >
+      Add Connection
+    </h2>
+    {% call ui.card() %}
+    <form action="/connect" method="post" class="space-y-5">
+      {% include "partials/csrf.html" %} {{ ui.input("token", "Setup Token:",
+      "text", "Setup Token") }} {{ ui.button("Connect Bank") }}
+    </form>
+    {% endcall %}
+  </div>
+
+  <div>
+    <h2
+      class="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4 px-1"
+    >
+      Connected Accounts
+    </h2>
+    <div class="space-y-3 min-h-[100px]">
+      {% include "partials/account_rows.html" %}
+    </div>
+  </div>
+
+  <div class="pt-8 border-t border-white/5">
+    <h2
+      class="text-xs text-gray-600 uppercase tracking-widest font-bold mb-4 px-1"
+    >
+      Manage Connections
+    </h2>
+    <div class="space-y-2">
+      {% for conn in connections %}
+      <div
+        class="flex justify-between items-center px-4 py-3 rounded-lg hover:bg-white/5 transition-colors group"
+      >
+        <div class="text-sm text-gray-400 group-hover:text-gray-300">
+          Connection {{ conn.id }}
+        </div>
+        <form
+          action="/disconnect/{{ conn.id }}"
+          method="post"
+          onsubmit="return confirm('Disconnect this bank?');"
+        >
+          {% include "partials/csrf.html" %}
+          <button
+            class="text-xs text-red-900 hover:text-red-500 hover:underline transition-colors"
+          >
+            Disconnect
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

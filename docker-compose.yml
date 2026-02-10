@@ -1,0 +1,19 @@
+services:
+  web:
+    image: sufyanmotala/transactions-web:latest
+    container_name: transactions-web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist the database in a named volume
+      - transaction_data:/data
+    env_file:
+      - .env
+    environment:
+      # These defaults can be overridden by the .env file, but act as a fallback
+      - XDG_DATA_HOME=/data
+      - PORT=8000
+
+volumes:
+  transaction_data:

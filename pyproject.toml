@@ -1,0 +1,21 @@
+[project]
+name = "transactions-monorepo"
+version = "0.1.0"
+description = "Monorepo for transactions financial tools"
+requires-python = ">=3.12"
+dependencies = ["transactions-core", "transactions-cli", "transactions-web"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*", "apps/*"]
+
+[tool.uv.sources]
+transactions-core = { workspace = true }
+transactions-cli = { workspace = true }
+transactions-web = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

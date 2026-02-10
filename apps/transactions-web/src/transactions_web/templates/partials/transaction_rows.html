@@ -1,0 +1,85 @@
+{% import "partials/components.html" as icon %}
+
+<div class="pb-20">
+  {% if errors %}
+  <div class="bg-red-500/10 border-b border-red-500/20 p-4 mb-4">
+    <ul class="text-xs text-red-300 list-disc list-inside">
+      {% for err in errors %}
+      <li>{{ err }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %} {% for month, txns in grouped_transactions %}
+  <div
+    class="sticky top-[73px] z-10 bg-black/95 border-b border-white/5 px-1 py-3 mb-2 mt-6 backdrop-blur"
+  >
+    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest pl-4">
+      {{ month }}
+    </h3>
+  </div>
+
+  <div class="divide-y divide-white/5">
+    {% for t in txns %}
+    <div
+      class="flex items-center justify-between p-5 hover:bg-white/[0.02] transition-colors group"
+    >
+      <div class="flex items-center gap-5">
+        <div
+          class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center shrink-0 border border-white/5"
+        >
+          {{ icon.bank("text-gray-400 w-6 h-6") }}
+        </div>
+        <div class="flex flex-col gap-1">
+          <div
+            class="text-lg font-bold tracking-tight {{ 'text-white' if t.amount < 0 else 'text-green-400' }}"
+          >
+            {{ (t.amount * -1) if t.amount < 0 else t.amount | currency }}
+          </div>
+          <div class="text-sm font-medium text-gray-300 truncate max-w-[200px]">
+            {{ t.payee or t.description }}
+          </div>
+          <div class="text-xs text-gray-500 font-medium">
+            {{ t.account_name }}
+          </div>
+        </div>
+      </div>
+      <div
+        class="text-xs font-medium text-gray-600 self-start mt-1.5 uppercase tracking-wide"
+      >
+        {{ t.date | date }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %} {% if not errors %}
+  <div class="flex flex-col items-center justify-center py-32 px-6 text-center">
+    <div
+      class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/5"
+    >
+      {{ icon.bank("text-gray-600 w-10 h-10") }}
+    </div>
+    <h3 class="text-xl font-bold text-white mb-2">No Transactions</h3>
+    <a
+      href="/settings"
+      class="bg-white hover:bg-gray-200 text-black px-8 py-3 rounded-xl font-bold transition-colors"
+      >Add Connection</a
+    >
+  </div>
+  {% endif %} {% endfor %}
+</div>
+
+<div
+  id="status-indicator"
+  hx-swap-oob="true"
+  class="flex items-center gap-2 mt-1.5"
+>
+  {% if errors %}
+  <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+  <span class="text-xs text-red-400 font-medium">Sync Error</span>
+  {% else %}
+  <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+  <span class="text-xs text-green-500 font-medium tracking-wide"
+    >Last synced {{ last_synced }}</span
+  >
+  {% endif %}
+</div>
