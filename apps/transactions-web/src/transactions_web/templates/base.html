@@ -2,8 +2,18 @@
 <html lang="en" class="dark">
   <head>
     <title>Transactions</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Transactions">
+    
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
       body {
@@ -19,5 +29,12 @@
     <div class="min-h-screen flex flex-col relative">
       {% block content %}{% endblock %}
     </div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/sw.js')
+          .then(reg => console.log('Service Worker Registered'))
+          .catch(err => console.log('Service Worker Registration Failed', err));
+      }
+    </script>
   </body>
 </html>

@@ -4,7 +4,8 @@ from datetime import datetime
 import secrets
 import uvicorn
 from fastapi import FastAPI, Depends, Request, Form, status, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from sqlmodel import Session, select
@@ -23,11 +24,29 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY, https_only=False)
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY, https_only=False, max_age=60*60*24*30)
 
 # Point to local templates directory
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+static_dir = BASE_DIR / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse(static_dir / "icons/favicon.png")
+
+
+@app.get("/apple-touch-icon.png", include_in_schema=False)
+async def apple_touch_icon():
+    return FileResponse(static_dir / "icons/apple-touch-icon.png")
+
+
+@app.get("/apple-touch-icon-precomposed.png", include_in_schema=False)
+async def apple_touch_icon_precomposed():
+    return FileResponse(static_dir / "icons/apple-touch-icon.png")
 
 
 # --- Custom Filters (Updated for Core Objects) ---
