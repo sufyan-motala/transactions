@@ -36,7 +36,6 @@ app.db
 
 # Configuration & Secrets
 config.json
-uv.lock
 
 # --- IDEs & OS ---
 .idea/
