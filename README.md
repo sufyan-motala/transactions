@@ -2,6 +2,9 @@
 
 A self-hosted financial tracking suite built with **Python 3.12**, **FastAPI**, **HTMX**, and **SimpleFin**. This monorepo is managed by [`uv`](https://github.com/astral-sh/uv).
 
+> [!IMPORTANT]
+> To use this application, you must first link your bank accounts on [SimpleFIN](https://beta-bridge.simplefin.org) to obtain a setup token.
+
 ## 🚀 Run with Docker Compose (Recommended)
 
 This is the standard way to run the **Web App** in production or on a home server.
